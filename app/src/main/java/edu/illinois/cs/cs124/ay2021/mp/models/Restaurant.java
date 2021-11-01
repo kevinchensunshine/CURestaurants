@@ -42,7 +42,7 @@ public final class Restaurant implements SortedListAdapter.ViewModel {
     for (int i = 0; i < restaurants.size(); i++) {
       String cuisine = restaurants.get(i).getCuisine().trim().toLowerCase();
       String name = restaurants.get(i).getName().trim().toLowerCase();
-      if (restaurants.get(i).getCuisine().toLowerCase().equals(searching)) {
+      if (cuisine == searching) {
         toReturn.add(restaurants.get(i));
       } else if (name.contains(searching)) {
         toReturn.add(restaurants.get(i));

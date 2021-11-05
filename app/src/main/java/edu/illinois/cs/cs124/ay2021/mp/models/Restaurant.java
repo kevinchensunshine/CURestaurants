@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import com.github.wrdlbrnft.sortedlistadapter.SortedListAdapter;
 import java.util.Comparator;
 import java.util.List;
-
+import java.util.ArrayList;
 /*
  * Model storing information about a restaurant retrieved from the restaurant server.
  *
@@ -32,8 +32,38 @@ public final class Restaurant implements SortedListAdapter.ViewModel {
     return cuisine;
   }
 
-  public static List<Restaurant> search(final List<Restaurant> restaurants, final String bar) {
-    return restaurants;
+  public static List<Restaurant> search(final List<Restaurant> restaurants, final String search) {
+    if (restaurants == null || search == null) {
+      throw new IllegalArgumentException();
+    }
+    String searching = search.trim().toLowerCase();
+    List<Restaurant> toReturn = new ArrayList<Restaurant>();
+    if (searching.isEmpty()) {
+      for (Restaurant a : restaurants) {
+        toReturn.add(a);
+      }
+      return toReturn;
+    }
+    for (Restaurant a : restaurants) {
+      if (a.getCuisine() != null) {
+        if (a.getCuisine().toLowerCase().equals(searching)) {
+          toReturn.add(a);
+        }
+      }
+    }
+    if (toReturn.size() > 0) {
+      return toReturn;
+    }
+    for (Restaurant a : restaurants) {
+      if (a.getCuisine() != null) {
+        String name = a.getName().toLowerCase();
+        String cuisine = a.getCuisine().toLowerCase();
+        if (name.contains(searching) || cuisine.contains(searching)) {
+          toReturn.add(a);
+        }
+      }
+    }
+    return toReturn;
   }
   /*
    * The Jackson JSON serialization library we are using requires an empty constructor.

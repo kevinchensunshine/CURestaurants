@@ -38,9 +38,7 @@ public final class Restaurant implements SortedListAdapter.ViewModel {
     String searching = search.trim().toLowerCase();
     List<Restaurant> toReturn = new ArrayList<Restaurant>();
     if (searching.isEmpty()) {
-      for (Restaurant a : restaurants) {
-        toReturn.add(a);
-      }
+      toReturn = new ArrayList<Restaurant>(restaurants);
       return toReturn;
     }
     for (Restaurant a : restaurants) {

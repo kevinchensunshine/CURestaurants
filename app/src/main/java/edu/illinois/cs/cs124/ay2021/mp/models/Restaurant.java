@@ -9,7 +9,6 @@ import java.util.ArrayList;
  * Model storing information about a restaurant retrieved from the restaurant server.
  *
  * You will need to understand some of the code in this file and make changes starting with MP1.
- *
  * If your project builds successfully, you can safely ignore the warning about "Related problems" here.
  * It seems to be a bug in Android studio.
  */

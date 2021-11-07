@@ -5,12 +5,20 @@ import android.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.illinois.cs.cs124.ay2021.mp.R;
 import edu.illinois.cs.cs124.ay2021.mp.adapters.RestaurantListAdapter;
 import edu.illinois.cs.cs124.ay2021.mp.application.EatableApplication;
 import edu.illinois.cs.cs124.ay2021.mp.databinding.ActivityMainBinding;
 import edu.illinois.cs.cs124.ay2021.mp.models.Restaurant;
+import edu.illinois.cs.cs124.ay2021.mp.network.Server;
 
+import java.util.List;
 /*
  * App main activity.
  * Started when the app is launched, based on the configuration in the Android Manifest (AndroidManifest.xml).
@@ -33,6 +41,24 @@ public final class MainActivity extends AppCompatActivity
   // Reference to the persistent Application instance
   private EatableApplication application;
 
+  private static List<Restaurant> restaurantList;
+
+  private static final int RESTAURANT_COUNT = 255;
+
+  static {
+    // Before testing begins, load the restaurant list using Server.loadRestaurants so that we have
+    // a loaded list for testing purposes
+    ObjectMapper objectMapper =
+            new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    try {
+      restaurantList = objectMapper.readValue(Server.loadRestaurants(), new TypeReference<>() {});
+      if (restaurantList.size() != RESTAURANT_COUNT) {
+        throw new IllegalStateException("Wrong restaurant count");
+      }
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException(e);
+    }
+  }
   /*
    * onCreate is the first method called when this activity is created.
    * Code here normally does a variety of setup tasks.
@@ -79,6 +105,8 @@ public final class MainActivity extends AppCompatActivity
    */
   @Override
   public boolean onQueryTextChange(final String query) {
+    Restaurant list = new Restaurant();
+    listAdapter.edit().replaceAll(list.search(restaurantList, query)).commit();
     return true;
   }
 
@@ -88,7 +116,6 @@ public final class MainActivity extends AppCompatActivity
    */
   @Override
   public void onClicked(final Restaurant restaurant) {}
-
   /*
    * Called when the user submits their search query.
    * We update the list as the text changes, so don't need to do anything special here.

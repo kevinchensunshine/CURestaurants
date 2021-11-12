@@ -31,6 +31,13 @@ public final class Restaurant implements SortedListAdapter.ViewModel {
     return cuisine;
   }
 
+  private String id;
+
+  // Getter for the name
+  public String getId() {
+    return id;
+  }
+
   public static List<Restaurant> search(final List<Restaurant> restaurants, final String search) {
     if (restaurants == null || search == null) {
       throw new IllegalArgumentException();

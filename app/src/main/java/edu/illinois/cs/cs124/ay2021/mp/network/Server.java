@@ -21,7 +21,6 @@ import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-
 /*
  * Restaurant API server.
  *
@@ -124,9 +123,27 @@ public final class Server extends Dispatcher {
     return restaurants.toPrettyString();
   }
 
-  // for MP2
+  // for MP2 preferences csv to json
   public static String loadPreferences() {
-    return null;
+    String input =
+        new Scanner(Server.class.getResourceAsStream("/preferences.csv"), "UTF-8")
+            .useDelimiter("\\A")
+            .next();
+    CSVReader csvReader = new CSVReaderBuilder(new StringReader(input)).withSkipLines(1).build();
+    ArrayNode preferences = JsonNodeFactory.instance.arrayNode();
+    for (String line : input.split("\n")) {
+      ObjectNode preference = JsonNodeFactory.instance.objectNode();
+      String[] parts = line.trim().split(",");
+      String personID = parts[0];
+      ArrayNode restaurantIDs = JsonNodeFactory.instance.arrayNode();
+      for (int i = 1; i < parts.length; i++) {
+        restaurantIDs.add(parts[i]);
+      }
+      preference.put("id", parts[0]);
+      preference.replace("restaurantIDs", restaurantIDs);
+      preferences.add(preference);
+    }
+    return preferences.toPrettyString();
   }
   // Number of restaurants that we expect to find in the CSV file
   // Normally this wouldn't be hardcoded but it's useful for testing

@@ -41,6 +41,8 @@ public final class Server extends Dispatcher {
   // server startup
   private final String restaurantsJson;
 
+  private final String preferencesJson;
+
   // Helper method for the GET /restaurants route, called by the dispatch method below
   private MockResponse getRestaurants() {
     return new MockResponse()
@@ -55,7 +57,19 @@ public final class Server extends Dispatcher {
          */
         .setHeader("Content-Type", "application/json; charset=utf-8");
   }
-
+  private MockResponse getPreferences() {
+    return new MockResponse()
+            // Indicate that the request succeeded (HTTP 200 OK)
+            .setResponseCode(HttpURLConnection.HTTP_OK)
+            // Load the JSON string with restaurant information into the body of the response
+            .setBody(preferencesJson)
+            /*
+             * Set the HTTP header that indicates that this is JSON with the utf-8 charset.
+             * There are some special characters in our data set, so it's important to mark it as utf-8 so it is parsed
+             * properly by clients.
+             */
+            .setHeader("Content-Type", "application/json; charset=utf-8");
+  }
   /*
    * Server request dispatcher.
    * Responsible for parsing the HTTP request and determining how to respond.
@@ -86,6 +100,8 @@ public final class Server extends Dispatcher {
       } else if (path.equals("/restaurants") && method.equals("GET")) {
         // Return the JSON list of restaurants for a GET request to the path /restaurants
         return getRestaurants();
+      } else if (path.equals("/preferences") && method.equals("GET")) {
+        return getPreferences();
       }
 
       // If the route didn't match above, then we return a 404 NOT FOUND
@@ -205,6 +221,7 @@ public final class Server extends Dispatcher {
 
   private Server() {
     restaurantsJson = loadRestaurants();
+    preferencesJson = loadPreferences();
 
     Logger.getLogger(MockWebServer.class.getName()).setLevel(Level.OFF);
     try {

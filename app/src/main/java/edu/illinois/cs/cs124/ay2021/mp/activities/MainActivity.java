@@ -1,5 +1,6 @@
 package edu.illinois.cs.cs124.ay2021.mp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.SearchView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -115,7 +116,11 @@ public final class MainActivity extends AppCompatActivity
    * Eventually (MP2) we'll launch a new activity here so they can see the restaurant details.
    */
   @Override
-  public void onClicked(final Restaurant restaurant) {}
+  public void onClicked(final Restaurant restaurant) {
+    Intent startRestaurant = new Intent(this, RestaurantActivity.class);
+    startRestaurant.putExtra("id", restaurant.getId());
+    startActivity(startRestaurant);
+  }
   /*
    * Called when the user submits their search query.
    * We update the list as the text changes, so don't need to do anything special here.

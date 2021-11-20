@@ -12,6 +12,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.NoCache;
 import com.android.volley.toolbox.StringRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +24,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -44,6 +47,12 @@ public final class Client {
   // We are using the Jackson JSON serialization library to deserialize data from the server
   private final ObjectMapper objectMapper =
       new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+  private Map<String, Restaurant> restaurantMap = new HashMap<>();
+
+  public Restaurant getRestaurantMapID(final String id) {
+    return restaurantMap.get(id);
+  }
 
   /*
    * Retrieve and deserialize a list of restaurants from the backend server.
@@ -72,6 +81,9 @@ public final class Client {
                  */
                 List<Restaurant> restaurants =
                     objectMapper.readValue(response, new TypeReference<>() {});
+                for (Restaurant r : restaurants) {
+                  restaurantMap.put(r.getId(), r);
+                }
                 // Call the callback method and pass it the list of restaurants
                 callback.accept(restaurants);
               } catch (Exception e) {

@@ -103,7 +103,7 @@ public final class Client {
     requestQueue.add(restaurantsRequest);
   }
   public void getPreferences(final Consumer<List<Preference>> callback) {
-    StringRequest preferenceRequest =
+    StringRequest preferencesRequest =
             new StringRequest(
                     Request.Method.GET,
                     EatableApplication.SERVER_URL + "preferences/",
@@ -132,7 +132,7 @@ public final class Client {
                       callback.accept(null);
                     });
     // Actually queue and run the request
-    requestQueue.add(preferenceRequest);
+    requestQueue.add(preferencesRequest);
   }
   /*
    * You do not need to modify the code below.

@@ -103,7 +103,36 @@ public final class Client {
     requestQueue.add(restaurantsRequest);
   }
   public void getPreferences(final Consumer<List<Preference>> callback) {
-    callback.accept(null);
+    StringRequest preferencesRequest =
+            new StringRequest(
+                    Request.Method.GET,
+                    EatableApplication.SERVER_URL + "preferences/",
+                    response -> {
+                      // This code runs on success
+                      try {
+                        /*
+                         * Deserialize the String into a List<Restaurant> using Jackson.
+                         */
+                        List<Preference> preferences =
+                                objectMapper.readValue(response, new TypeReference<>() {});
+                        // Call the callback method and pass it the list of restaurants
+                        callback.accept(preferences);
+                      } catch (Exception e) {
+                        Log.e(TAG, e.toString());
+                        // There are better approaches than returning null here, but we need to do something
+                        // to make sure that the callback returns even on error
+                        callback.accept(null);
+                      }
+                    },
+                    error -> {
+                      // This code runs on failure
+                      Log.e(TAG, error.toString());
+                      // There are better approaches than returning null here, but we need to do something
+                      // to make sure that the callback returns even on error
+                      callback.accept(null);
+                    });
+    // Actually queue and run the request
+    requestQueue.add(preferencesRequest);
   }
   /*
    * You do not need to modify the code below.

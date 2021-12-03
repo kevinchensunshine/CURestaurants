@@ -39,4 +39,11 @@ public class RelatedRestaurants {
       return returnMap;
     }
   }
+  public List<Restaurant> getRelatedInOrder(final String id) {
+    return null;
+  }
+
+  public Set<Restaurant> getConnectedTo(final String restaurantID) {
+    return null;
+  }
 }

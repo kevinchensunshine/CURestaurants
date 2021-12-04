@@ -1,15 +1,23 @@
 package edu.illinois.cs.cs124.ay2021.mp.models;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Collections;
 
 public class RelatedRestaurants {
   private Map<String, Map<String, Integer>> restaurantRelationships = new HashMap<>();
 
+  private final Map<String, Restaurant> restaurantMap = new HashMap();
+
   public RelatedRestaurants(final List<Restaurant> restaurants, final List<Preference> preferences) {
     Set<String> checkedRestaurants = new HashSet();
+    for (Restaurant r : restaurants) {
+      restaurantMap.put(r.getId(), r);
+    }
     for (Restaurant r : restaurants) {
       checkedRestaurants.add(r.getId());
     }
@@ -39,8 +47,30 @@ public class RelatedRestaurants {
       return returnMap;
     }
   }
+
   public List<Restaurant> getRelatedInOrder(final String id) {
-    return null;
+    if (id == null || id.isEmpty() || restaurantMap.get(id) == null) {
+      throw new IllegalArgumentException();
+    }
+    Map<String, Integer> relatedIDs = getRelated(id);
+    relatedIDs.remove(id);
+    List<String> ids = new ArrayList();
+    for (Map.Entry<String, Integer> r : relatedIDs.entrySet()) {
+      ids.add(r.getKey());
+    }
+    Comparator<String> sortAlphaLength = (s1, s2) -> {
+      if (relatedIDs.get(s1) - relatedIDs.get(s2) == 0) {
+        return restaurantMap.get(s1).getName().compareTo(restaurantMap.get(s2).getName());
+      } else {
+        return (relatedIDs.get(s2) - relatedIDs.get(s1));
+      }
+    };
+    Collections.sort(ids, sortAlphaLength);
+    List<Restaurant> stringToRestaurant = new ArrayList();
+    for (String a : ids) {
+      stringToRestaurant.add(restaurantMap.get(a));
+    }
+    return stringToRestaurant;
   }
 
   public Set<Restaurant> getConnectedTo(final String restaurantID) {

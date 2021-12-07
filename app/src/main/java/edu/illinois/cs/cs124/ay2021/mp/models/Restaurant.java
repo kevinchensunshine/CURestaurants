@@ -99,7 +99,22 @@ public final class Restaurant implements SortedListAdapter.ViewModel {
     }
     return 0;
   });
-
+  @Override
+  public boolean equals(final Object o) {
+    if (!(o instanceof Restaurant)) {
+      return false;
+    }
+    Restaurant r = (Restaurant) o;
+    return id.equals(r.getId());
+  }
+  @Override
+  public int hashCode() {
+    return id.hashCode();
+  }
+  @Override
+  public String toString() {
+    return name;
+  }
   // You should not need to modify this code, which is used by the list adapter component
   @Override
   public <T> boolean isSameModelAs(@NonNull final T model) {

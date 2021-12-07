@@ -74,6 +74,33 @@ public class RelatedRestaurants {
   }
 
   public Set<Restaurant> getConnectedTo(final String restaurantID) {
-    return null;
+    if (restaurantID == null || restaurantID == "" || !restaurantMap.containsKey(restaurantID)) {
+      throw new IllegalArgumentException();
+    }
+    Set<String> connectedSet = new HashSet<>();
+    Set<String> returnedSet = helper(restaurantID, connectedSet);
+    Set<Restaurant> restaurantSet = new HashSet<>();
+    for (String i : returnedSet) {
+      restaurantSet.add(restaurantMap.get(i));
+    }
+    return restaurantSet;
+  }
+  private Set<String> helper(final String id, final Set<String> ids) {
+    Map<String, Integer> neighbors = getRelated(id);
+    neighbors.remove(id);
+    for (String i : neighbors.keySet()) {
+      Map<String, Integer> twoStep = getRelated(i);
+      twoStep.remove(i);
+      if (neighbors.get(i) > 1 && !ids.contains(neighbors.get(i))) {
+        ids.add(i);
+        for (String j : twoStep.keySet()) {
+          if (twoStep.get(j) > 1 && !ids.contains(twoStep.get(i))) {
+            ids.add(j);
+          }
+        }
+      }
+    }
+    ids.remove(id);
+    return ids;
   }
 }

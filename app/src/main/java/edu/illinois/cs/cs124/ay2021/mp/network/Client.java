@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.illinois.cs.cs124.ay2021.mp.application.EatableApplication;
 import edu.illinois.cs.cs124.ay2021.mp.models.Preference;
+import edu.illinois.cs.cs124.ay2021.mp.models.RelatedRestaurants;
 import edu.illinois.cs.cs124.ay2021.mp.models.Restaurant;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -53,6 +54,9 @@ public final class Client {
     return restaurantMap.get(id);
   }
 
+  private List<Restaurant> res;
+  private List<Preference> prefs;
+  private RelatedRestaurants related;
   /*
    * Retrieve and deserialize a list of restaurants from the backend server.
    * Takes as an argument a callback method to call when the request completes which will be passed the deserialized
@@ -80,6 +84,7 @@ public final class Client {
                  */
                 List<Restaurant> restaurants =
                     objectMapper.readValue(response, new TypeReference<>() {});
+                res = restaurants;
                 for (Restaurant r : restaurants) {
                   restaurantMap.put(r.getId(), r);
                 }
@@ -117,6 +122,9 @@ public final class Client {
                                 objectMapper.readValue(response, new TypeReference<>() {});
                         // Call the callback method and pass it the list of restaurants
                         callback.accept(preferences);
+                        prefs = preferences;
+                        System.out.println(res.size() + prefs.size());
+                        related = new RelatedRestaurants(res, prefs);
                       } catch (Exception e) {
                         Log.e(TAG, e.toString());
                         // There are better approaches than returning null here, but we need to do something

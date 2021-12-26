@@ -87,7 +87,11 @@ public final class MainActivity extends AppCompatActivity
          * Callbacks allow us to wait for something to complete and run code when it does.
          * In this case, once we retrieve a list of restaurants, we use it to update the contents of our list.
          */
-        .getRestaurants((restaurants -> listAdapter.edit().replaceAll(restaurants).commit()));
+        .getRestaurants((restaurants -> {
+          listAdapter.edit().replaceAll(restaurants).commit();
+          application.getClient().getPreferences((pref -> { }));
+        }));
+
 
     // Bind to the search component so that we can receive events when the contents of the search
     // box change

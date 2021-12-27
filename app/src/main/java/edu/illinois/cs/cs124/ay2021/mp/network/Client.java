@@ -57,6 +57,9 @@ public final class Client {
   private List<Restaurant> res;
   private List<Preference> prefs;
   private RelatedRestaurants related;
+  public RelatedRestaurants getRelated() {
+    return related;
+  }
   /*
    * Retrieve and deserialize a list of restaurants from the backend server.
    * Takes as an argument a callback method to call when the request completes which will be passed the deserialized
@@ -123,7 +126,6 @@ public final class Client {
                         // Call the callback method and pass it the list of restaurants
                         callback.accept(preferences);
                         prefs = preferences;
-                        System.out.println(res.size() + prefs.size());
                         related = new RelatedRestaurants(res, prefs);
                       } catch (Exception e) {
                         Log.e(TAG, e.toString());

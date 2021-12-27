@@ -150,7 +150,6 @@ public final class Server extends Dispatcher {
     for (String line : input.split("\n")) {
       ObjectNode preference = JsonNodeFactory.instance.objectNode();
       String[] parts = line.trim().split(",");
-      String personID = parts[0];
       ArrayNode restaurantIDs = JsonNodeFactory.instance.arrayNode();
       for (int i = 1; i < parts.length; i++) {
         restaurantIDs.add(parts[i]);
